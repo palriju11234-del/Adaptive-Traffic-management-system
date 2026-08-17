@@ -1,1 +1,42 @@
-.
+<?xml version="1.0" encoding="UTF-8"?>
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/routes_file.xsd">
+
+    <!-- Vehicle type -->
+    <vType id="car" accel="2.6" decel="4.5" sigma="0.5" length="5.0"
+           maxSpeed="13.89" guiShape="passenger"/>
+
+    <!-- ============================================================ -->
+    <!-- ROUTES: one route per origin-destination pair (through moves) -->
+    <!-- ============================================================ -->
+
+    <!-- North-South corridor -->
+    <route id="route_NS" edges="N_to_C C_to_S"/>
+    <route id="route_SN" edges="S_to_C C_to_N"/>
+
+    <!-- East-West corridor -->
+    <route id="route_EW" edges="E_to_C C_to_W"/>
+    <route id="route_WE" edges="W_to_C C_to_E"/>
+
+    <!-- ============================================================ -->
+    <!-- FLOWS: intentionally unbalanced for future adaptive demo     -->
+    <!--   North/South ~60 vehicles total, East/West ~20 vehicles     -->
+    <!-- ============================================================ -->
+
+    <!-- North → South: 30 vehicles over 600s -->
+    <flow id="flow_NS" type="car" route="route_NS"
+          begin="0" end="600" number="30" departLane="best" departSpeed="max"/>
+
+    <!-- South → North: 30 vehicles over 600s -->
+    <flow id="flow_SN" type="car" route="route_SN"
+          begin="0" end="600" number="30" departLane="best" departSpeed="max"/>
+
+    <!-- East → West: 10 vehicles over 600s -->
+    <flow id="flow_EW" type="car" route="route_EW"
+          begin="0" end="600" number="10" departLane="best" departSpeed="max"/>
+
+    <!-- West → East: 10 vehicles over 600s -->
+    <flow id="flow_WE" type="car" route="route_WE"
+          begin="0" end="600" number="10" departLane="best" departSpeed="max"/>
+
+</routes>
