@@ -7,7 +7,7 @@
            maxSpeed="13.89" guiShape="passenger"/>
 
     <!-- ============================================================ -->
-    <!-- ROUTES: one route per origin-destination pair (through moves) -->
+    <!-- ROUTES                                                       -->
     <!-- ============================================================ -->
 
     <!-- North-South corridor -->
@@ -19,24 +19,27 @@
     <route id="route_WE" edges="W_to_C C_to_E"/>
 
     <!-- ============================================================ -->
-    <!-- FLOWS: intentionally unbalanced for future adaptive demo     -->
-    <!--   North/South ~60 vehicles total, East/West ~20 vehicles     -->
+    <!-- SUSTAINED UNBALANCED TRAFFIC                                -->
     <!-- ============================================================ -->
 
-    <!-- North → South: 30 vehicles over 600s -->
+    <!-- North → South -->
     <flow id="flow_NS" type="car" route="route_NS"
-          begin="0" end="600" number="30" departLane="best" departSpeed="max"/>
+          begin="0" end="100" vehsPerHour="1800"
+          departLane="best" departSpeed="max"/>
 
-    <!-- South → North: 30 vehicles over 600s -->
+    <!-- South → North -->
     <flow id="flow_SN" type="car" route="route_SN"
-          begin="0" end="600" number="30" departLane="best" departSpeed="max"/>
+          begin="0" end="100" vehsPerHour="1800"
+          departLane="best" departSpeed="max"/>
 
-    <!-- East → West: 10 vehicles over 600s -->
+    <!-- East → West -->
     <flow id="flow_EW" type="car" route="route_EW"
-          begin="0" end="600" number="10" departLane="best" departSpeed="max"/>
+          begin="0" end="100" vehsPerHour="300"
+          departLane="best" departSpeed="max"/>
 
-    <!-- West → East: 10 vehicles over 600s -->
+    <!-- West → East -->
     <flow id="flow_WE" type="car" route="route_WE"
-          begin="0" end="600" number="10" departLane="best" departSpeed="max"/>
+          begin="0" end="100" vehsPerHour="150"
+          departLane="best" departSpeed="max"/>
 
 </routes>
