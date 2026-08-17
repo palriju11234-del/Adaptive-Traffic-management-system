@@ -1,13 +1,17 @@
 """
-SignalX — Main Simulation Runner (Phase 1 + Phase 2 + Part 3)
+SignalX — Main Simulation Runner (Parts 1–5)
 
 Phase 1: SUMO + Python + TraCI connection
 Phase 2: Single four-arm junction with fixed two-phase traffic signal
 Part 3:  Real-time traffic state collection through TraCI
+Part 4:  Demand-based adaptive traffic signal controller
+Part 5:  Closed-loop adaptive control with per-cycle re-measurement
 
 Usage:
-    python main.py          Run headless (no GUI window)
-    python main.py --gui    Run with SUMO-GUI (visual)
+    python main.py              Run with closed-loop adaptive controller (headless)
+    python main.py --gui        Run with closed-loop adaptive controller + SUMO-GUI
+    python main.py --fixed      Run with the original fixed-timing controller
+    python main.py --fixed --gui
 """
 
 import os
@@ -20,6 +24,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from controller.traffic_state import TrafficStateCollector
 from controller.signal_controller import FixedSignalController
+from controller.adaptive_controller import AdaptiveController
 
 
 # ── Configuration ───────────────────────────────────────────────────
@@ -61,11 +66,20 @@ def find_sumo():
 
 def main():
     use_gui = "--gui" in sys.argv
+    use_fixed = "--fixed" in sys.argv
+
+    # Select controller mode label
+    if use_fixed:
+        controller_label = "Fixed timing (30s green / 3s yellow / 1s all-red)"
+        part_label = "Part 3: Fixed Signal Controller"
+    else:
+        controller_label = "Closed-loop adaptive (demand-based, 20–60s green)"
+        part_label = "Part 5: Closed-Loop Adaptive Controller"
 
     print()
     print("=" * 56)
     print("   SignalX - Adaptive Traffic Management System")
-    print("   Part 3: Real-Time Traffic State Collection")
+    print(f"   {part_label}")
     print("=" * 56)
     print()
 
@@ -102,10 +116,14 @@ def main():
     print()
 
     # ── Initialize controllers ──────────────────────────────────────
-    signal_controller = FixedSignalController()
     collector = TrafficStateCollector()
 
-    print("Signal controller : Fixed timing (30s green / 3s yellow / 1s all-red)")
+    if use_fixed:
+        signal_controller = FixedSignalController()
+    else:
+        signal_controller = AdaptiveController()
+
+    print(f"Signal controller : {controller_label}")
     print("State collector   : TrafficStateCollector (lane-level, per-vehicle)")
     print(f"Report interval   : every {STATE_UPDATE_INTERVAL}s")
     print()
@@ -121,7 +139,10 @@ def main():
             step += 1
 
             # Advance the signal controller
-            phase_name = signal_controller.step(dt=1.0)
+            if use_fixed:
+                phase_name = signal_controller.step(dt=1.0)
+            else:
+                phase_name = signal_controller.step(collector)
 
             # Periodic traffic state collection
             if sim_time - last_report_time >= STATE_UPDATE_INTERVAL:
